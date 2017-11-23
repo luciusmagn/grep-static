@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# build static tar because we need exercises in minimalism
-# MIT licentar: google it or see robxu9.mit-license.org.
+# build static grep because we need exercises in minimalism
+# MIT licengrep: google it or see robxu9.mit-license.org.
 #
 # For Linux, also builds musl for truly static linking.
 
-tar_version="1.29"
+grep_version="3.1"
 musl_version="1.1.15"
 
 platform=$(uname -s)
@@ -18,12 +18,12 @@ fi
 mkdir build # make build directory
 pushd build
 
-# download tarballs
-echo "= downloading tar"
-curl -LO http://ftp.gnu.org/gnu/tar/tar-${tar_version}.tar.xz
+# download grepballs
+echo "= downloading grep"
+curl -LO http://ftp.gnu.org/gnu/grep/grep-${grep_version}.tar.xz
 
-echo "= extracting tar"
-tar xJf tar-${tar_version}.tar.xz
+echo "= extracting grep"
+tar xJf grep-${grep_version}.tar.xz
 
 if [ "$platform" = "Linux" ]; then
   echo "= downloading musl"
@@ -50,12 +50,12 @@ else
   echo "= (This is mainly due to non-static libc availability.)"
 fi
 
-echo "= building tar"
+echo "= building grep"
 
-pushd tar-${tar_version}
+pushd grep-${grep_version}
 env FORCE_UNSAFE_CONFIGURE=1 CFLAGS="$CFLAGS -Os -ffunction-sections -fdata-sections" LDFLAGS='-Wl,--gc-sections' ./configure
 make
-popd # tar-${tar_version}
+popd # grep-${grep_version}
 
 popd # build
 
@@ -64,9 +64,15 @@ if [ ! -d releases ]; then
 fi
 
 echo "= striptease"
-strip -s -R .comment -R .gnu.version --strip-unneeded build/tar-${tar_version}/src/tar
+strip -s -R .comment -R .gnu.version --strip-unneeded build/grep-${grep_version}/src/grep
+strip -s -R .comment -R .gnu.version --strip-unneeded build/grep-${grep_version}/src/fgrep
+strip -s -R .comment -R .gnu.version --strip-unneeded build/grep-${grep_version}/src/egrep
 echo "= compressing"
-upx --ultra-brute build/tar-${tar_version}/src/tar
-echo "= extracting tar binary"
-cp build/tar-${tar_version}/src/tar releases
+upx --ultra-brute build/grep-${grep_version}/src/grep
+upx --ultra-brute build/grep-${grep_version}/src/egrep
+upx --ultra-brute build/grep-${grep_version}/src/fgrep
+echo "= extracting grep binary"
+cp build/grep-${grep_version}/src/grep releases
+cp build/grep-${grep_version}/src/fgrep releases
+cp build/grep-${grep_version}/src/egrep releases
 echo "= done"
