@@ -75,6 +75,6 @@ echo "= extracting grep binary"
 cp build/grep-${grep_version}/src/grep releases
 cp build/grep-${grep_version}/src/fgrep releases
 cp build/grep-${grep_version}/src/egrep releases
-sed -i 's/#!/bin/sh/#!/bin/bash/g' releases/fgrep
-sed -i 's/#!/bin/sh/#!/bin/bash/g' releases/egrep
+sed -i 's|#!/bin/sh|#!/bin/bash|g' releases/fgrep
+sed -i 's|#!/bin/sh|#!/bin/bash|g' releases/egrep
 echo "= done"
